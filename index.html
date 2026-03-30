@@ -153,17 +153,33 @@ let segmentLayers = []; // {id, isJak, color} // per-segment polylines for hover
 // ── LEAFLET INIT ───────────────────────────────────────────────────────────
 function initMap() {
   document.getElementById('map').innerHTML = '';
+
+  var rasterStyle = {
+    version: 8,
+    sources: {
+      'carto-dark': {
+        type: 'raster',
+        tiles: ['https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+                'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+                'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png'],
+        tileSize: 256,
+        attribution: '© OpenStreetMap © CARTO'
+      }
+    },
+    layers: [{id:'background', type:'raster', source:'carto-dark'}]
+  };
+
   map = new maplibregl.Map({
     container: 'map',
-    style: 'https://tiles.openfreemap.org/styles/dark',
+    style: rasterStyle,
     center: [106.8456, -6.2088],
     zoom: 11,
     attributionControl: false
   });
   map.addControl(new maplibregl.NavigationControl(), 'top-right');
   map.addControl(new maplibregl.AttributionControl({compact:true}), 'bottom-right');
-  // Wait for style to load before we can add sources/layers
   map.on('load', function() { mapReady = true; });
+  map.on('error', function(e) { console.warn('Map error:', e); });
 }
 
 // ── SHAPES LAZY ────────────────────────────────────────────────────────────
