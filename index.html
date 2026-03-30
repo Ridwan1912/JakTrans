@@ -37,7 +37,7 @@ header{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:
 .frow{display:flex;gap:6px}
 .fb{flex:1;padding:6px 4px;border-radius:6px;border:1px solid var(--bd);background:transparent;color:var(--mu);font-size:10px;font-family:'Space Mono',monospace;cursor:pointer;transition:all .15s}
 .fb:hover{border-color:var(--tx);color:var(--tx)}
-.fb.a-all{border-color:var(--ac);color:var(--ac);background:#e8f03c12}
+.fb.a-all{border-color:var(--ac);color:var(--ac);background:#e8f03c12}.fb.a-dir{border-color:#a78bfa;color:#a78bfa;background:#a78bfa12}
 .fb.a-brt{border-color:#D62126;color:#ff7070;background:#D6212612}
 .fb.a-jak{border-color:#00609C;color:#4a9eff;background:#00609C12}
 .fb.a-oth{border-color:var(--ac2);color:var(--ac2);background:#3ce8b412}
@@ -109,6 +109,7 @@ header{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:
         <div class="lbl">Filter Moda</div>
         <div class="frow">
           <button class="fb a-all" id="f_all" onclick="setF('all')">Semua</button>
+          <button class="fb"       id="f_dir" onclick="setF('dir')">Langsung</button>
           <button class="fb"       id="f_brt" onclick="setF('brt')">BRT</button>
           <button class="fb"       id="f_jak" onclick="setF('jak')">Mikrotrans</button>
           <button class="fb"       id="f_oth" onclick="setF('oth')">Lainnya</button>
@@ -282,12 +283,13 @@ document.addEventListener('mousedown', function(e) {
 });
 
 // ── FILTER ────────────────────────────────────────────────────────────────
-var FDESCS = { all:null, brt:['BRT'], jak:['Mikrotrans'], oth:['Angkutan Umum Integrasi','Royaltrans','Transjabodetabek','Rusun','Shuttle','Bus Wisata'] };
+var FDESCS = { all:null, dir:null, brt:['BRT'], jak:['Mikrotrans'], oth:['Angkutan Umum Integrasi','Royaltrans','Transjabodetabek','Rusun','Shuttle','Bus Wisata'] };
 
 function setF(f) {
   filt = f;
-  ['all','brt','jak','oth'].forEach(function(k) {
-    document.getElementById('f_'+k).className = 'fb' + (f === k ? ' a-'+k : '');
+  ['all','dir','brt','jak','oth'].forEach(function(k) {
+    var el = document.getElementById('f_'+k);
+    if (el) el.className = 'fb' + (f === k ? ' a-'+k : '');
   });
 }
 
@@ -313,7 +315,8 @@ function findRoutes(fromId, toId) {
       if (!G.stops[ns] || !ok(nr)) continue;
       var isX = c.cur && c.cur !== nr;
       var nx  = c.xf + (isX ? 1 : 0);
-      if (nx > 3) continue;
+      var maxXf = (filt === 'dir') ? 0 : 3;
+      if (nx > maxXf) continue;
       queue.push({stop:ns, path:c.path.concat([{stop:ns, route:nr, isX:isX}]), xf:nx, cur:nr});
     }
   }
@@ -492,6 +495,20 @@ function showOnMap(result) {
       }
     }
     segmentLayers.push({layer:layer, isJak:isJak});
+
+    // Draw stop dots for this segment
+    seg.stops.forEach(function(sid) {
+      var s = G.stops[sid];
+      if (!s) return;
+      L.circleMarker([s.la, s.lo], {
+        radius: 3,
+        fillColor: color,
+        color: '#0d0f14',
+        weight: 1,
+        fillOpacity: 0.8,
+        pane: 'markerPane'
+      }).bindTooltip(esc(s.n), {direction:'top', offset:[0,-4]}).addTo(rL);
+    });
   });
 
   // Origin
