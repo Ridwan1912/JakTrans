@@ -34,10 +34,11 @@ header{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:
 .aci:last-child{border-bottom:none}
 .aci:hover,.aci.sel{background:var(--bd)}
 .aci .sid{font-family:'Space Mono',monospace;font-size:9px;color:var(--mu);flex-shrink:0}
-.frow{display:flex;gap:6px}
-.fb{flex:1;padding:6px 4px;border-radius:6px;border:1px solid var(--bd);background:transparent;color:var(--mu);font-size:10px;font-family:'Space Mono',monospace;cursor:pointer;transition:all .15s}
+.frow{display:flex;gap:5px;flex-wrap:wrap}
+.fb{flex:1;min-width:fit-content;padding:6px 6px;border-radius:6px;border:1px solid var(--bd);background:transparent;color:var(--mu);font-size:10px;font-family:'Space Mono',monospace;cursor:pointer;transition:all .15s}
 .fb:hover{border-color:var(--tx);color:var(--tx)}
-.fb.a-all{border-color:var(--ac);color:var(--ac);background:#e8f03c12}.fb.a-dir{border-color:#a78bfa;color:#a78bfa;background:#a78bfa12}
+.fb.a-all{border-color:var(--ac);color:var(--ac);background:#e8f03c12}
+.fb.a-dir{border-color:#a78bfa;color:#a78bfa;background:#a78bfa12}
 .fb.a-brt{border-color:#D62126;color:#ff7070;background:#D6212612}
 .fb.a-jak{border-color:#00609C;color:#4a9eff;background:#00609C12}
 .fb.a-oth{border-color:var(--ac2);color:var(--ac2);background:#3ce8b412}
@@ -46,7 +47,6 @@ header{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:
 .divdr{height:1px;background:var(--bd)}
 .empty{text-align:center;padding:24px 12px;color:var(--mu);font-size:12px;line-height:1.8}
 .empty .ei{font-size:26px;display:block;margin-bottom:8px}
-/* Route cards */
 .rc{background:var(--sf2);border:1px solid var(--bd);border-radius:9px;overflow:hidden;cursor:pointer;transition:border-color .15s;margin-bottom:6px}
 .rc:hover,.rc.active{border-color:var(--ac)}
 .rch{padding:9px 11px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
@@ -57,26 +57,22 @@ header{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:
 .rb.oth{background:#3ce8b420;color:var(--ac2);border:1px solid var(--ac2)}
 .xb{font-size:10px;font-family:'Space Mono',monospace;padding:2px 6px;border-radius:4px;background:#ffffff10;color:var(--mu)}
 .rcb{padding:0 11px 10px}
-/* Journey steps */
 .jrn{display:flex;flex-direction:column}
 .js{display:flex;align-items:flex-start;gap:9px;padding:4px 0;position:relative}
+.js.hoverable:hover{background:#ffffff08;border-radius:5px;margin:0 -4px;padding:4px}
 .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;position:relative;z-index:1}
 .dot.ori{background:var(--ac)}
 .dot.dst{background:var(--re)}
 .dot.trf{background:var(--ac2)}
-.dot.walk{background:transparent;border:2px dashed var(--mu)}
 .ln{position:absolute;left:3px;top:13px;bottom:-4px;width:2px;border-radius:1px}
 .st{flex:1;font-size:12px;line-height:1.5}
 .st .sn{font-weight:600}
 .st .sr{color:var(--mu);font-size:10px;margin-top:1px}
 .st .hs{color:var(--ac2);font-size:10px;font-family:'Space Mono',monospace;margin-top:2px}
-/* Segment hover highlight */
-.seg-line{cursor:default}
-.seg-line:hover{opacity:1!important}
 #map{flex:1;background:#0a0c10}
-.maplibregl-canvas{outline:none}
-.ml-tip .maplibregl-popup-content{background:#1e2230;border:1px solid #2a2f3f;border-radius:6px;padding:5px 8px;color:#e8eaf0;box-shadow:0 4px 12px #00000066}
-.ml-tip .maplibregl-popup-tip{border-top-color:#1e2230}
+.maplibregl-popup-content{background:var(--sf2)!important;border:1px solid var(--bd)!important;color:var(--tx)!important;font-family:'DM Sans',sans-serif!important;font-size:11px!important;padding:5px 9px!important;border-radius:6px!important;box-shadow:0 4px 12px #00000066!important}
+.maplibregl-popup-tip{border-top-color:var(--bd)!important}
+.maplibregl-ctrl-attrib{font-size:9px!important}
 @media(max-width:600px){.sidebar{width:100%;min-width:unset;max-height:55vh}.main{flex-direction:column}#map{min-height:45vh}}
 </style>
 <script type="application/json" id="gtfsMain">
@@ -96,17 +92,11 @@ header{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:
     <div class="si">
       <div>
         <div class="lbl">Halte Asal</div>
-        <div class="iw" id="wF">
-          <span class="iico">🟢</span>
-          <input type="text" id="iF" placeholder="Ketik nama halte..." autocomplete="off">
-        </div>
+        <div class="iw" id="wF"><span class="iico">🟢</span><input type="text" id="iF" placeholder="Ketik nama halte..." autocomplete="off"></div>
       </div>
       <div>
         <div class="lbl">Halte Tujuan</div>
-        <div class="iw" id="wT">
-          <span class="iico">🔴</span>
-          <input type="text" id="iT" placeholder="Ketik nama halte..." autocomplete="off">
-        </div>
+        <div class="iw" id="wT"><span class="iico">🔴</span><input type="text" id="iT" placeholder="Ketik nama halte..." autocomplete="off"></div>
       </div>
       <div>
         <div class="lbl">Filter Moda</div>
@@ -139,457 +129,329 @@ const stopList = Object.entries(G.stops)
   .sort((a,b) => a.n.localeCompare(b.n));
 
 let selF = null, selT = null, filt = 'all';
-let map = null, mapReady = false;
-let segmentLayers = []; // {id, isJak, color} // per-segment polylines for hover highlight
+let map = null, mL = null, rL = null, mReady = false;
+let segmentLayers = [];
 
-// ── INIT STAT ──────────────────────────────────────────────────────────────
+// ── STAT ───────────────────────────────────────────────────────────────────
 (function(){
   var el = document.getElementById('stat');
   el.textContent = Object.keys(G.stops).length.toLocaleString() + ' halte · ' + Object.keys(G.routes).length + ' rute';
-  el.style.borderColor = 'var(--ac2)';
-  el.style.color = 'var(--ac2)';
+  el.style.borderColor = 'var(--ac2)'; el.style.color = 'var(--ac2)';
 })();
 
 // ── LEAFLET INIT ───────────────────────────────────────────────────────────
 function initMap() {
-  document.getElementById('map').innerHTML = '';
-
-  var rasterStyle = {
-    version: 8,
-    sources: {
-      'carto-dark': {
-        type: 'raster',
-        tiles: ['https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
-                'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
-                'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png'],
-        tileSize: 256,
-        attribution: '© OpenStreetMap © CARTO'
-      }
-    },
-    layers: [{id:'background', type:'raster', source:'carto-dark'}]
-  };
-
+  // Inline raster style — no external style.json needed
   map = new maplibregl.Map({
     container: 'map',
-    style: rasterStyle,
+    style: {
+      version: 8,
+      sources: { carto: {
+        type: 'raster',
+        tiles: [
+          'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+          'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+          'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png'
+        ],
+        tileSize: 256,
+        attribution: '© OpenStreetMap © CARTO'
+      }},
+      layers: [{ id: 'carto-tiles', type: 'raster', source: 'carto' }]
+    },
     center: [106.8456, -6.2088],
-    zoom: 11,
-    attributionControl: false
+    zoom: 11
   });
   map.addControl(new maplibregl.NavigationControl(), 'top-right');
-  map.addControl(new maplibregl.AttributionControl({compact:true}), 'bottom-right');
-  map.on('load', function() { mapReady = true; });
-  map.on('error', function(e) { console.warn('Map error:', e); });
+  map.on('load', function() {
+    mReady = true;
+    console.log('Maplibre ready');
+  });
+  map.on('error', function(e) {
+    console.error('Maplibre error:', e);
+  });
 }
 
 // ── SHAPES LAZY ────────────────────────────────────────────────────────────
 function ensureShapes() {
-  if (shapesLoaded) return;
-  shapesLoaded = true;
+  if (shapesLoaded) return; shapesLoaded = true;
   G.shapes = JSON.parse(document.getElementById('gtfsShapes').textContent);
 }
 
 // ── HELPERS ────────────────────────────────────────────────────────────────
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function dcls(desc) {
-  if (desc === 'BRT') return 'brt';
-  if (desc === 'Mikrotrans') return 'jak';
-  if (desc === 'Angkutan Umum Integrasi') return 'aui';
-  return 'oth';
-}
-function getColor(rid) {
-  var c = G.routes[rid] && G.routes[rid].color;
-  return c ? '#' + c : '#e8f03c';
+function dcls(d) { return d==='BRT'?'brt':d==='Mikrotrans'?'jak':d==='Angkutan Umum Integrasi'?'aui':'oth'; }
+function getColor(rid) { var c=G.routes[rid]&&G.routes[rid].color; return c?'#'+c:'#e8f03c'; }
+
+function getHeadsign(rid, firstStop, lastStop) {
+  var ro = G.routes[rid]; if (!ro) return '';
+  var stored = G.routeStops[rid]||[];
+  var iF = stored.indexOf(firstStop), iL = stored.indexOf(lastStop);
+  if (iF===-1||iL===-1) return ro.hs0||'';
+  var sameDir = iF <= iL, storedDir = ro.dir||'0';
+  return ((sameDir&&storedDir==='0')||(!sameDir&&storedDir==='1')) ? (ro.hs0||'') : (ro.hs1||'');
 }
 
-// Determine which headsign to show based on traversal direction
-// Compare first stop of our path segment vs stored route direction
-function getHeadsign(rid, firstStop, lastStop) {
-  var ro = G.routes[rid];
-  if (!ro) return '';
-  var stored = G.routeStops[rid] || [];
-  if (!stored.length) return ro.hs0 || '';
-  // If our first stop appears before lastStop in stored order => same direction
-  var iFirst = stored.indexOf(firstStop);
-  var iLast  = stored.indexOf(lastStop);
-  if (iFirst === -1 || iLast === -1) return ro.hs0 || '';
-  var sameDir = iFirst <= iLast;
-  var storedDir = ro.dir || '0';
-  if ((sameDir && storedDir === '0') || (!sameDir && storedDir === '1')) {
-    return ro.hs0 || '';
-  } else {
-    return ro.hs1 || '';
-  }
+function buildSegs(path) {
+  var segs=[], cur=null;
+  path.forEach(function(s){ if(!cur||cur.r!==s.route){if(cur)segs.push(cur);cur={r:s.route,stops:[]};} cur.stops.push(s.stop); });
+  if(cur) segs.push(cur); return segs;
 }
 
 // ── AUTOCOMPLETE ──────────────────────────────────────────────────────────
 var acIdx = {f:-1, t:-1};
 
 function positionAC(inp, list) {
-  var r = inp.getBoundingClientRect();
-  var spaceBelow = window.innerHeight - r.bottom;
-  var spaceAbove = r.top;
-  list.style.left  = r.left + 'px';
-  list.style.width = r.width + 'px';
-  list.style.maxHeight = Math.min(220, Math.max(spaceAbove, spaceBelow) - 8) + 'px';
-  if (spaceAbove > spaceBelow) {
-    list.style.top    = '';
-    list.style.bottom = (window.innerHeight - r.top) + 'px';
-  } else {
-    list.style.bottom = '';
-    list.style.top    = r.bottom + 'px';
-  }
+  var r=inp.getBoundingClientRect(), spB=window.innerHeight-r.bottom, spA=r.top;
+  list.style.left=r.left+'px'; list.style.width=r.width+'px';
+  list.style.maxHeight=Math.min(220,Math.max(spA,spB)-8)+'px';
+  if(spA>spB){list.style.top='';list.style.bottom=(window.innerHeight-r.top)+'px';}
+  else{list.style.bottom='';list.style.top=r.bottom+'px';}
 }
 
 function openAC(which, q) {
-  var inp  = document.getElementById(which === 'f' ? 'iF' : 'iT');
-  var list = document.getElementById(which === 'f' ? 'acF' : 'acT');
-  acIdx[which] = -1;
-  if (q.length < 2) { list.classList.remove('open'); list.innerHTML = ''; return; }
-  var hits = stopList.filter(function(s){ return s.n.toLowerCase().indexOf(q) > -1; }).slice(0, 40);
-  if (!hits.length) { list.classList.remove('open'); list.innerHTML = ''; return; }
-  list.innerHTML = hits.map(function(s) {
-    return '<div class="aci" data-id="' + s.id + '" data-name="' + esc(s.n).replace(/"/g,'&quot;') + '">' +
-           '<span>' + esc(s.n) + '</span><span class="sid">' + s.id + '</span></div>';
+  var inp=document.getElementById(which==='f'?'iF':'iT'), list=document.getElementById(which==='f'?'acF':'acT');
+  acIdx[which]=-1;
+  if(q.length<2){list.classList.remove('open');list.innerHTML='';return;}
+  var hits=stopList.filter(function(s){return s.n.toLowerCase().indexOf(q)>-1;}).slice(0,40);
+  if(!hits.length){list.classList.remove('open');list.innerHTML='';return;}
+  list.innerHTML=hits.map(function(s){
+    return '<div class="aci" data-id="'+s.id+'" data-name="'+esc(s.n).replace(/"/g,'&quot;')+'">'+'<span>'+esc(s.n)+'</span><span class="sid">'+s.id+'</span></div>';
   }).join('');
-  list.querySelectorAll('.aci').forEach(function(el) {
-    el.addEventListener('mousedown', function(e) {
-      e.preventDefault(); e.stopPropagation();
-      pickStop(which, el.dataset.id, el.dataset.name);
-    });
+  list.querySelectorAll('.aci').forEach(function(el){
+    el.addEventListener('mousedown',function(e){e.preventDefault();e.stopPropagation();pickStop(which,el.dataset.id,el.dataset.name);});
   });
-  positionAC(inp, list);
-  list.classList.add('open');
+  positionAC(inp,list); list.classList.add('open');
 }
 
-function pickStop(which, id, name) {
-  if (which === 'f') { selF = id; document.getElementById('iF').value = name; document.getElementById('acF').classList.remove('open'); }
-  else               { selT = id; document.getElementById('iT').value = name; document.getElementById('acT').classList.remove('open'); }
+function pickStop(which,id,name){
+  if(which==='f'){selF=id;document.getElementById('iF').value=name;document.getElementById('acF').classList.remove('open');}
+  else{selT=id;document.getElementById('iT').value=name;document.getElementById('acT').classList.remove('open');}
 }
 
-document.getElementById('iF').addEventListener('input', function(){ openAC('f', this.value.trim().toLowerCase()); });
-document.getElementById('iT').addEventListener('input', function(){ openAC('t', this.value.trim().toLowerCase()); });
+document.getElementById('iF').addEventListener('input',function(){openAC('f',this.value.trim().toLowerCase());});
+document.getElementById('iT').addEventListener('input',function(){openAC('t',this.value.trim().toLowerCase());});
 
-function handleKey(e, which) {
-  var list  = document.getElementById(which === 'f' ? 'acF' : 'acT');
-  var items = list.querySelectorAll('.aci');
-  if (!items.length) return;
-  if      (e.key === 'ArrowDown') { e.preventDefault(); acIdx[which] = Math.min(acIdx[which]+1, items.length-1); items.forEach(function(el,i){ el.classList.toggle('sel', i===acIdx[which]); }); }
-  else if (e.key === 'ArrowUp')   { e.preventDefault(); acIdx[which] = Math.max(acIdx[which]-1, 0);             items.forEach(function(el,i){ el.classList.toggle('sel', i===acIdx[which]); }); }
-  else if (e.key === 'Enter' && acIdx[which] >= 0) { items[acIdx[which]].dispatchEvent(new MouseEvent('mousedown')); }
-  else if (e.key === 'Escape') { list.classList.remove('open'); }
+function handleKey(e,which){
+  var list=document.getElementById(which==='f'?'acF':'acT'),items=list.querySelectorAll('.aci');
+  if(!items.length)return;
+  if(e.key==='ArrowDown'){e.preventDefault();acIdx[which]=Math.min(acIdx[which]+1,items.length-1);items.forEach(function(el,i){el.classList.toggle('sel',i===acIdx[which]);});}
+  else if(e.key==='ArrowUp'){e.preventDefault();acIdx[which]=Math.max(acIdx[which]-1,0);items.forEach(function(el,i){el.classList.toggle('sel',i===acIdx[which]);});}
+  else if(e.key==='Enter'&&acIdx[which]>=0){items[acIdx[which]].dispatchEvent(new MouseEvent('mousedown'));}
+  else if(e.key==='Escape'){list.classList.remove('open');}
 }
-document.getElementById('iF').addEventListener('keydown', function(e){ handleKey(e,'f'); });
-document.getElementById('iT').addEventListener('keydown', function(e){ handleKey(e,'t'); });
-
-document.addEventListener('mousedown', function(e) {
-  if (!e.target.closest('#wF') && !e.target.closest('#acF')) document.getElementById('acF').classList.remove('open');
-  if (!e.target.closest('#wT') && !e.target.closest('#acT')) document.getElementById('acT').classList.remove('open');
+document.getElementById('iF').addEventListener('keydown',function(e){handleKey(e,'f');});
+document.getElementById('iT').addEventListener('keydown',function(e){handleKey(e,'t');});
+document.addEventListener('mousedown',function(e){
+  if(!e.target.closest('#wF')&&!e.target.closest('#acF'))document.getElementById('acF').classList.remove('open');
+  if(!e.target.closest('#wT')&&!e.target.closest('#acT'))document.getElementById('acT').classList.remove('open');
 });
 
 // ── FILTER ────────────────────────────────────────────────────────────────
-var FDESCS = { all:null, dir:null, brt:['BRT'], jak:['Mikrotrans'], oth:['Angkutan Umum Integrasi','Royaltrans','Transjabodetabek','Rusun','Shuttle','Bus Wisata'] };
+var FDESCS={all:null,dir:null,brt:['BRT'],jak:['Mikrotrans'],oth:['Angkutan Umum Integrasi','Royaltrans','Transjabodetabek','Rusun','Shuttle','Bus Wisata']};
 
-function setF(f) {
-  filt = f;
-  ['all','dir','brt','jak','oth'].forEach(function(k) {
-    var el = document.getElementById('f_'+k);
-    if (el) el.className = 'fb' + (f === k ? ' a-'+k : '');
+function setF(f){
+  filt=f;
+  ['all','dir','brt','jak','oth'].forEach(function(k){
+    var el=document.getElementById('f_'+k); if(el) el.className='fb'+(f===k?' a-'+k:'');
   });
 }
 
 // ── BFS ───────────────────────────────────────────────────────────────────
-function findRoutes(fromId, toId) {
-  var allowed = FDESCS[filt];
-  function ok(rid) {
-    if (!allowed) return true;
-    var desc = G.routes[rid] ? G.routes[rid].desc : '';
-    return allowed.indexOf(desc) > -1;
-  }
-  var queue = [{stop:fromId, path:[], xf:0, cur:null}];
-  var vis = {}, res = [];
-  while (queue.length && res.length < 6) {
-    var c = queue.shift();
-    if (c.stop === toId) { res.push({path:c.path, xf:c.xf}); continue; }
-    var vk = c.stop + ':' + c.cur;
-    if (vis[vk] !== undefined && vis[vk] <= c.xf) continue;
-    vis[vk] = c.xf;
-    var neighbors = G.graph[c.stop] || [];
-    for (var i = 0; i < neighbors.length; i++) {
-      var ns = neighbors[i][0], nr = neighbors[i][1];
-      if (!G.stops[ns] || !ok(nr)) continue;
-      var isX = c.cur && c.cur !== nr;
-      var nx  = c.xf + (isX ? 1 : 0);
-      var maxXf = (filt === 'dir') ? 0 : 3;
-      if (nx > maxXf) continue;
-      queue.push({stop:ns, path:c.path.concat([{stop:ns, route:nr, isX:isX}]), xf:nx, cur:nr});
+function findRoutes(fromId,toId){
+  var allowed=FDESCS[filt];
+  function ok(rid){if(!allowed)return true;var d=G.routes[rid]?G.routes[rid].desc:'';return allowed.indexOf(d)>-1;}
+  var queue=[{stop:fromId,path:[],xf:0,cur:null}],vis={},res=[];
+  while(queue.length&&res.length<6){
+    var c=queue.shift();
+    if(c.stop===toId){res.push({path:c.path,xf:c.xf});continue;}
+    var vk=c.stop+':'+c.cur;
+    if(vis[vk]!==undefined&&vis[vk]<=c.xf)continue;
+    vis[vk]=c.xf;
+    var nb=G.graph[c.stop]||[];
+    for(var i=0;i<nb.length;i++){
+      var ns=nb[i][0],nr=nb[i][1];
+      if(!G.stops[ns]||!ok(nr))continue;
+      var isX=c.cur&&c.cur!==nr, nx=c.xf+(isX?1:0);
+      var maxXf=(filt==='dir')?0:3;
+      if(nx>maxXf)continue;
+      queue.push({stop:ns,path:c.path.concat([{stop:ns,route:nr,isX:isX}]),xf:nx,cur:nr});
     }
   }
-  res.sort(function(a,b){ return a.xf - b.xf || a.path.length - b.path.length; });
-  var seen = {};
-  return res.filter(function(r) {
-    var key = r.path.map(function(s){return s.route;}).filter(function(v,i,a){return a.indexOf(v)===i;}).join(',');
-    if (seen[key]) return false; seen[key] = true; return true;
+  res.sort(function(a,b){return a.xf-b.xf||a.path.length-b.path.length;});
+  var seen={};
+  return res.filter(function(r){
+    var k=r.path.map(function(s){return s.route;}).filter(function(v,i,a){return a.indexOf(v)===i;}).join(',');
+    if(seen[k])return false;seen[k]=true;return true;
   });
 }
 
 // ── SEARCH ────────────────────────────────────────────────────────────────
-function doSearch() {
-  if (!selF || !selT) { alert('Pilih halte asal dan tujuan'); return; }
-  if (selF === selT)  { alert('Halte asal dan tujuan sama'); return; }
-  document.getElementById('res').innerHTML = '<div class="empty"><span class="ei">⏳</span>Mencari...</div>';
-  setTimeout(function() { renderResults(findRoutes(selF, selT)); }, 30);
-}
-
-// ── BUILD SEGMENTS from path ───────────────────────────────────────────────
-function buildSegs(path) {
-  var segs = [], cur = null;
-  path.forEach(function(step) {
-    if (!cur || cur.r !== step.route) { if (cur) segs.push(cur); cur = {r:step.route, stops:[]}; }
-    cur.stops.push(step.stop);
-  });
-  if (cur) segs.push(cur);
-  return segs;
+function doSearch(){
+  if(!selF||!selT){alert('Pilih halte asal dan tujuan');return;}
+  if(selF===selT){alert('Halte asal dan tujuan sama');return;}
+  document.getElementById('res').innerHTML='<div class="empty"><span class="ei">⏳</span>Mencari...</div>';
+  setTimeout(function(){renderResults(findRoutes(selF,selT));},30);
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────
-function jStep(type, main, sub, hs, lineColor, hasLine) {
-  return '<div class="js">' +
-    '<div style="position:relative;display:flex;flex-direction:column;align-items:center">' +
-    '<div class="dot ' + type + '"></div>' +
-    (hasLine ? '<div class="ln" style="background:' + (lineColor||'var(--bd)') + '"></div>' : '') +
-    '</div>' +
-    '<div class="st">' +
-    '<div class="sn">' + main + '</div>' +
-    (sub ? '<div class="sr">' + sub + '</div>' : '') +
-    (hs  ? '<div class="hs">→ arah ' + hs + '</div>' : '') +
-    '</div></div>';
+function jStep(type,main,sub,hs,lineColor,hasLine){
+  return '<div class="js'+(type==='trf'?' hoverable':'')+'">'
+    +'<div style="position:relative;display:flex;flex-direction:column;align-items:center">'
+    +'<div class="dot '+type+'"></div>'
+    +(hasLine?'<div class="ln" style="background:'+(lineColor||'var(--bd)')+'"></div>':'')
+    +'</div><div class="st"><div class="sn">'+main+'</div>'
+    +(sub?'<div class="sr">'+sub+'</div>':'')
+    +(hs?'<div class="hs">→ arah '+hs+'</div>':'')
+    +'</div></div>';
 }
 
-function renderResults(results) {
-  var el = document.getElementById('res');
-  if (!results.length) {
-    el.innerHTML = '<div class="empty"><span class="ei">😔</span>Tidak ditemukan rute.<br><small>Coba halte lebih besar atau ubah filter.</small></div>';
-    return;
-  }
-  el.innerHTML = '<div class="lbl">' + results.length + ' rute ditemukan</div>';
-  results.forEach(function(r, i) {
-    var card = buildCard(r);
-    el.appendChild(card);
-    if (i === 0) { card.classList.add('active'); showOnMap(r); }
-  });
+function renderResults(results){
+  var el=document.getElementById('res');
+  if(!results.length){el.innerHTML='<div class="empty"><span class="ei">😔</span>Tidak ditemukan rute.<br><small>Coba halte lebih besar atau ubah filter.</small></div>';return;}
+  el.innerHTML='<div class="lbl">'+results.length+' rute ditemukan</div>';
+  results.forEach(function(r,i){var card=buildCard(r);el.appendChild(card);if(i===0){card.classList.add('active');showOnMap(r);}});
 }
 
-function buildCard(result) {
-  var card = document.createElement('div');
-  card.className = 'rc';
-  var segs = buildSegs(result.path);
-
-  // Unique route IDs in order
-  var rids = [];
-  segs.forEach(function(s){ if (rids.indexOf(s.r)===-1) rids.push(s.r); });
-
-  var badges = rids.map(function(rid) {
-    var ro = G.routes[rid] || {};
-    return '<span class="rb ' + dcls(ro.desc||'') + '">' + esc(ro.sn||rid) + '</span>';
-  }).join(' ');
-
-  var xLabel = result.xf === 0 ? 'Langsung' : result.xf + 'x transfer';
-
-  // Build journey steps
-  var fromStop = G.stops[selF];
-  var toStop   = G.stops[selT];
-  var steps = jStep('ori', esc(fromStop ? fromStop.n : selF), null, null, null, segs.length > 0);
-
-  segs.forEach(function(seg, si) {
-    var ro      = G.routes[seg.r] || {};
-    var isLast  = si === segs.length - 1;
-    var color   = getColor(seg.r);
-    var firstSt = seg.stops[0];
-    var lastSt  = seg.stops[seg.stops.length-1];
-    var hs      = getHeadsign(seg.r, firstSt, lastSt);
-
-    if (si === 0) {
-      // First segment: board at origin
-      steps += jStep('trf',
-        esc(ro.ln || seg.r),
-        seg.stops.length + ' halte · ' + (ro.desc||''),
-        hs, color, !isLast);
+function buildCard(result){
+  var card=document.createElement('div'); card.className='rc';
+  var segs=buildSegs(result.path);
+  var rids=[]; segs.forEach(function(s){if(rids.indexOf(s.r)===-1)rids.push(s.r);});
+  var badges=rids.map(function(rid){var ro=G.routes[rid]||{};return '<span class="rb '+dcls(ro.desc||'')+'">'+esc(ro.sn||rid)+'</span>';}).join(' ');
+  var xLabel=result.xf===0?'Langsung':result.xf+'x transfer';
+  var steps=jStep('ori',esc(G.stops[selF]?G.stops[selF].n:selF),null,null,null,segs.length>0);
+  segs.forEach(function(seg,si){
+    var ro=G.routes[seg.r]||{}, isLast=si===segs.length-1, color=getColor(seg.r);
+    var hs=getHeadsign(seg.r,seg.stops[0],seg.stops[seg.stops.length-1]);
+    if(si===0){
+      steps+=jStep('trf',esc(ro.ln||seg.r),seg.stops.length+' halte · '+(ro.desc||''),hs,color,!isLast);
     } else {
-      // Transfer segment: board at transfer stop
-      var boardStop = G.stops[seg.stops[0]];
-      var boardName = boardStop ? boardStop.n : seg.stops[0];
-      steps += jStep('trf',
-        'Transfer → ' + esc(ro.ln || seg.r),
-        'Naik di ' + esc(boardName) + ' · ' + seg.stops.length + ' halte',
-        hs, color, !isLast);
+      var at=G.stops[seg.stops[0]]; steps+=jStep('trf','Transfer → '+esc(ro.ln||seg.r),'Naik di '+esc(at?at.n:seg.stops[0])+' · '+seg.stops.length+' halte',hs,color,!isLast);
     }
   });
+  steps+=jStep('dst',esc(G.stops[selT]?G.stops[selT].n:selT),null,null,null,false);
+  card.innerHTML='<div class="rch">'+badges+'<span class="xb">'+xLabel+'</span></div>'+'<div class="rcb"><div class="jrn">'+steps+'</div></div>';
 
-  steps += jStep('dst', esc(toStop ? toStop.n : selT), null, null, null, false);
-
-  card.innerHTML =
-    '<div class="rch">' + badges + '<span class="xb">' + xLabel + '</span></div>' +
-    '<div class="rcb"><div class="jrn">' + steps + '</div></div>';
-
-  // Hover on steps to highlight segment on map
-  var stepEls = card.querySelectorAll('.js');
-  segs.forEach(function(seg, si) {
-    var stepEl = stepEls[si + 1]; // +1 because first step is origin
-    if (!stepEl) return;
-    stepEl.addEventListener('mouseenter', function() { highlightSegment(si); });
-    stepEl.addEventListener('mouseleave', function() { highlightSegment(-1); });
+  // Hover step → highlight segment on map
+  var stepEls=card.querySelectorAll('.js.hoverable');
+  segs.forEach(function(seg,si){
+    var el=stepEls[si]; if(!el)return;
+    el.addEventListener('mouseenter',function(){highlightSegment(si);});
+    el.addEventListener('mouseleave',function(){highlightSegment(-1);});
   });
 
-  card.addEventListener('click', function() {
-    document.querySelectorAll('.rc').forEach(function(c){ c.classList.remove('active'); });
-    card.classList.add('active');
-    showOnMap(result);
+  card.addEventListener('click',function(){
+    document.querySelectorAll('.rc').forEach(function(c){c.classList.remove('active');});
+    card.classList.add('active'); showOnMap(result);
   });
   return card;
 }
 
 // ── MAP ───────────────────────────────────────────────────────────────────
-function highlightSegment(idx) {
-  if (!map || !mapReady) return;
-  segmentLayers.forEach(function(item, i) {
-    var lineId  = 'route-line-' + i;
-    var baseW   = item.isJak ? 3 : 4;
-    if (idx === -1) {
-      map.setPaintProperty(lineId, 'line-opacity', 0.85);
-      map.setPaintProperty(lineId, 'line-width', baseW);
-    } else if (i === idx) {
-      map.setPaintProperty(lineId, 'line-opacity', 1);
-      map.setPaintProperty(lineId, 'line-width', baseW + 2);
-    } else {
-      map.setPaintProperty(lineId, 'line-opacity', 0.2);
-      map.setPaintProperty(lineId, 'line-width', baseW - 1);
-    }
+function highlightSegment(idx){
+  if(!map||!mReady) return;
+  segmentLayers.forEach(function(item,i){
+    var layerId='seg-line-'+i;
+    try {
+      if(!map.getLayer(layerId)) return;
+      var baseW=item.isJak?3:4;
+      if(idx===-1){map.setPaintProperty(layerId,'line-opacity',.85);map.setPaintProperty(layerId,'line-width',baseW);}
+      else if(i===idx){map.setPaintProperty(layerId,'line-opacity',1);map.setPaintProperty(layerId,'line-width',baseW+2);}
+      else{map.setPaintProperty(layerId,'line-opacity',.2);map.setPaintProperty(layerId,'line-width',baseW-1);}
+    } catch(e) {}
   });
 }
 
-function showOnMap(result) {
-  if (!map) return;
-  ensureShapes();
-
-  // Remove previous layers/sources
-  segmentLayers.forEach(function(item, i) {
-    var lineId = 'route-line-' + i;
-    var dotId  = 'route-dots-' + i;
-    var srcId  = 'route-src-'  + i;
-    var dotSrc = 'dots-src-'   + i;
-    if (map.getLayer(lineId))  map.removeLayer(lineId);
-    if (map.getLayer(dotId))   map.removeLayer(dotId);
-    if (map.getSource(srcId))  map.removeSource(srcId);
-    if (map.getSource(dotSrc)) map.removeSource(dotSrc);
+function showOnMap(result){
+  if(!map) return;
+  // Clear previous layers
+  segmentLayers.forEach(function(item,i){
+    ['seg-line-'+i,'seg-dots-'+i].forEach(function(id){ try{ if(map.getLayer(id))map.removeLayer(id); }catch(e){} });
+    ['seg-src-'+i,'dots-src-'+i].forEach(function(id){ try{ if(map.getSource(id))map.removeSource(id); }catch(e){} });
   });
-  // Remove marker layers
-  ['ml-origin','ml-dest','ml-transfer'].forEach(function(id) {
-    if (map.getLayer(id))  map.removeLayer(id);
-    if (map.getSource(id)) map.removeSource(id);
-  });
+  ['ml-markers'].forEach(function(id){ try{ if(map.getLayer(id))map.removeLayer(id); if(map.getSource(id))map.removeSource(id); }catch(e){} });
   segmentLayers = [];
 
-  if (!result || !result.path.length) return;
+  if(!result||!result.path.length) return;
+  ensureShapes();
+  var segs=buildSegs(result.path), allCoords=[];
 
-  var segs     = buildSegs(result.path);
-  var allCoords = [];
-
-  // Wait for map style to be ready
   function doRender() {
-    segs.forEach(function(seg, si) {
-      var color  = getColor(seg.r);
-      var isJak  = (G.routes[seg.r] && G.routes[seg.r].desc) === 'Mikrotrans';
-      var weight = isJak ? 3 : 4;
-      var dash   = isJak ? [4, 3] : null;
-      var lineId = 'route-line-' + si;
-      var dotId  = 'route-dots-' + si;
-      var srcId  = 'route-src-'  + si;
-      var dotSrc = 'dots-src-'   + si;
+    segs.forEach(function(seg,si){
+      var color=getColor(seg.r), isJak=(G.routes[seg.r]&&G.routes[seg.r].desc)==='Mikrotrans';
+      var shapeId=G.routeShape[seg.r];
+      var lineCoords=[];
 
-      // Line coords — prefer shape, fallback to stop sequence
-      var shapeId = G.routeShape[seg.r];
-      var lineCoords = [];
-      if (shapeId && G.shapes && G.shapes[shapeId]) {
-        lineCoords = G.shapes[shapeId].map(function(p){ return [p[1], p[0]]; });
-        allCoords  = allCoords.concat(G.shapes[shapeId].map(function(p){ return [p[0], p[1]]; }));
+      if(shapeId&&G.shapes&&G.shapes[shapeId]){
+        lineCoords=G.shapes[shapeId].map(function(p){return[p[1],p[0]];});
+        allCoords=allCoords.concat(G.shapes[shapeId].map(function(p){return[p[0],p[1]];}));
       } else {
-        seg.stops.forEach(function(sid) {
-          var s = G.stops[sid];
-          if (s) { lineCoords.push([s.lo, s.la]); allCoords.push([s.la, s.lo]); }
+        (G.routeStops[seg.r]||[]).forEach(function(sid){
+          var s=G.stops[sid]; if(s){lineCoords.push([s.lo,s.la]);allCoords.push([s.la,s.lo]);}
         });
       }
 
-      if (lineCoords.length > 1) {
-        map.addSource(srcId, {type:'geojson', data:{type:'Feature', geometry:{type:'LineString', coordinates:lineCoords}}});
-        var paint = {'line-color':color, 'line-width':weight, 'line-opacity':0.85};
-        if (dash) paint['line-dasharray'] = dash;
-        map.addLayer({id:lineId, type:'line', source:srcId, layout:{'line-cap':'round','line-join':'round'}, paint:paint});
+      var srcId='seg-src-'+si, layerId='seg-line-'+si;
+      if(lineCoords.length>1){
+        map.addSource(srcId,{type:'geojson',data:{type:'Feature',geometry:{type:'LineString',coordinates:lineCoords}}});
+        var paint={'line-color':color,'line-width':isJak?3:4,'line-opacity':0.85};
+        if(isJak) paint['line-dasharray']=[4,3];
+        map.addLayer({id:layerId,type:'line',source:srcId,layout:{'line-cap':'round','line-join':'round'},paint:paint});
       }
+      segmentLayers.push({isJak:isJak,color:color});
 
       // Stop dots
-      var dotFeatures = seg.stops
-        .filter(function(sid){ return G.stops[sid]; })
-        .map(function(sid) {
-          var s = G.stops[sid];
-          return {type:'Feature', properties:{name:s.n}, geometry:{type:'Point', coordinates:[s.lo, s.la]}};
-        });
-      if (dotFeatures.length) {
-        map.addSource(dotSrc, {type:'geojson', data:{type:'FeatureCollection', features:dotFeatures}});
-        map.addLayer({id:dotId, type:'circle', source:dotSrc, paint:{
-          'circle-radius':3, 'circle-color':color,
-          'circle-stroke-color':'#0d0f14', 'circle-stroke-width':1, 'circle-opacity':0.85
+      var dotFeats=seg.stops.filter(function(sid){return G.stops[sid];}).map(function(sid){
+        var s=G.stops[sid];
+        return{type:'Feature',properties:{name:s.n},geometry:{type:'Point',coordinates:[s.lo,s.la]}};
+      });
+      if(dotFeats.length){
+        var dotSrc='dots-src-'+si, dotLyr='seg-dots-'+si;
+        map.addSource(dotSrc,{type:'geojson',data:{type:'FeatureCollection',features:dotFeats}});
+        map.addLayer({id:dotLyr,type:'circle',source:dotSrc,paint:{
+          'circle-radius':3,'circle-color':color,
+          'circle-stroke-color':'#0d0f14','circle-stroke-width':1,'circle-opacity':0.85
         }});
-        // Tooltip on hover
-        map.on('mouseenter', dotId, function(e) {
-          map.getCanvas().style.cursor = 'pointer';
-          var name = e.features[0].properties.name;
-          new maplibregl.Popup({closeButton:false, closeOnClick:false, className:'ml-tip'})
+        map.on('mouseenter',dotLyr,function(e){
+          map.getCanvas().style.cursor='pointer';
+          new maplibregl.Popup({closeButton:false,closeOnClick:false})
             .setLngLat(e.features[0].geometry.coordinates)
-            .setHTML('<span style="font-size:11px;font-family:DM Sans,sans-serif">' + esc(name) + '</span>')
+            .setHTML('<div style="font-size:11px">'+esc(e.features[0].properties.name)+'</div>')
             .addTo(map);
         });
-        map.on('mouseleave', dotId, function() {
-          map.getCanvas().style.cursor = '';
-          var popups = document.querySelectorAll('.maplibregl-popup');
-          popups.forEach(function(p){ p.remove(); });
+        map.on('mouseleave',dotLyr,function(){
+          map.getCanvas().style.cursor='';
+          document.querySelectorAll('.maplibregl-popup').forEach(function(p){p.remove();});
         });
       }
-
-      segmentLayers.push({isJak:isJak, color:color});
     });
 
-    // Origin marker
-    var fs = G.stops[selF];
-    var ts = G.stops[selT];
-    var markerFeatures = [];
-    if (fs) { markerFeatures.push({type:'Feature',properties:{t:'ori',n:fs.n},geometry:{type:'Point',coordinates:[fs.lo,fs.la]}}); allCoords.push([fs.la,fs.lo]); }
-    if (ts) { markerFeatures.push({type:'Feature',properties:{t:'dst',n:ts.n},geometry:{type:'Point',coordinates:[ts.lo,ts.la]}}); allCoords.push([ts.la,ts.lo]); }
-    result.path.forEach(function(step) {
-      if (step.isX) { var s=G.stops[step.stop]; if(s) markerFeatures.push({type:'Feature',properties:{t:'trf',n:s.n},geometry:{type:'Point',coordinates:[s.lo,s.la]}}); }
+    // Markers: origin, transfers, destination
+    var mFeats=[];
+    var fs=G.stops[selF], ts=G.stops[selT];
+    if(fs){mFeats.push({type:'Feature',properties:{t:'ori',n:fs.n},geometry:{type:'Point',coordinates:[fs.lo,fs.la]}});allCoords.push([fs.la,fs.lo]);}
+    result.path.forEach(function(step){
+      if(step.isX){var s=G.stops[step.stop];if(s)mFeats.push({type:'Feature',properties:{t:'trf',n:s.n},geometry:{type:'Point',coordinates:[s.lo,s.la]}});}
     });
+    if(ts){mFeats.push({type:'Feature',properties:{t:'dst',n:ts.n},geometry:{type:'Point',coordinates:[ts.lo,ts.la]}});allCoords.push([ts.la,ts.lo]);}
 
-    map.addSource('ml-origin', {type:'geojson', data:{type:'FeatureCollection', features:markerFeatures}});
-    map.addLayer({id:'ml-origin', type:'circle', source:'ml-origin', paint:{
-      'circle-radius':['match',['get','t'],'trf',7,9],
-      'circle-color':['match',['get','t'],'ori','#e8f03c','dst','#ff4757','#3ce8b4'],
-      'circle-stroke-color':'#0d0f14','circle-stroke-width':2
-    }});
+    if(mFeats.length){
+      map.addSource('ml-markers',{type:'geojson',data:{type:'FeatureCollection',features:mFeats}});
+      map.addLayer({id:'ml-markers',type:'circle',source:'ml-markers',paint:{
+        'circle-radius':['match',['get','t'],'trf',7,9],
+        'circle-color':['match',['get','t'],'ori','#e8f03c','dst','#ff4757','#3ce8b4'],
+        'circle-stroke-color':'#0d0f14','circle-stroke-width':2,'circle-opacity':1
+      }});
+    }
 
     // Fit bounds
-    if (allCoords.length) {
-      var lons = allCoords.map(function(c){return c[1];});
-      var lats = allCoords.map(function(c){return c[0];});
-      map.fitBounds(
-        [[Math.min.apply(null,lons), Math.min.apply(null,lats)],
-         [Math.max.apply(null,lons), Math.max.apply(null,lats)]],
-        {padding:60, maxZoom:15}
-      );
+    if(allCoords.length){
+      var lons=allCoords.map(function(c){return c[1];}), lats=allCoords.map(function(c){return c[0];});
+      map.fitBounds([[Math.min.apply(null,lons),Math.min.apply(null,lats)],[Math.max.apply(null,lons),Math.max.apply(null,lats)]],{padding:60,maxZoom:15});
     }
   }
 
-  if (mapReady) { doRender(); }
-  else { map.once('load', function(){ mapReady=true; doRender(); }); }
+  if(mReady) doRender();
+  else map.once('load', function(){ mReady=true; doRender(); });
 }
 
 </script>
