@@ -6,7 +6,7 @@
 <title>JakTransit — Cari Rute</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" onerror="this.href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css'"/>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css"/>
 <style>
 :root{--bg:#0d0f14;--sf:#161920;--sf2:#1e2230;--bd:#2a2f3f;--ac:#e8f03c;--ac2:#3ce8b4;--tx:#e8eaf0;--mu:#6b7494;--re:#ff4757}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -74,6 +74,9 @@ header{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:
 .seg-line{cursor:default}
 .seg-line:hover{opacity:1!important}
 #map{flex:1;background:#0a0c10}
+.maplibregl-canvas{outline:none}
+.ml-tip .maplibregl-popup-content{background:#1e2230;border:1px solid #2a2f3f;border-radius:6px;padding:5px 8px;color:#e8eaf0;box-shadow:0 4px 12px #00000066}
+.ml-tip .maplibregl-popup-tip{border-top-color:#1e2230}
 @media(max-width:600px){.sidebar{width:100%;min-width:unset;max-height:55vh}.main{flex-direction:column}#map{min-height:45vh}}
 </style>
 <script type="application/json" id="gtfsMain">
@@ -124,26 +127,7 @@ header{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:
 </div>
 <div class="ac" id="acF"></div>
 <div class="ac" id="acT"></div>
-<script>
-(function() {
-  var urls = [
-    'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js'
-  ];
-  function tryLoad(i) {
-    if (i >= urls.length) {
-      document.getElementById('map').innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#6b7494;font-size:13px">Map tidak tersedia</div>';
-      return;
-    }
-    var s = document.createElement('script');
-    s.src = urls[i];
-    s.onload = function() { initMap(); };
-    s.onerror = function() { tryLoad(i+1); };
-    document.head.appendChild(s);
-  }
-  tryLoad(0);
-})();
-</script>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js" onload="initMap()"></script>
 <script>
 
 // ── DATA & STATE ──────────────────────────────────────────────────────────
@@ -155,8 +139,8 @@ const stopList = Object.entries(G.stops)
   .sort((a,b) => a.n.localeCompare(b.n));
 
 let selF = null, selT = null, filt = 'all';
-let map = null, mL = null, rL = null;
-let segmentLayers = []; // per-segment polylines for hover highlight
+let map = null, mapReady = false;
+let segmentLayers = []; // {id, isJak, color} // per-segment polylines for hover highlight
 
 // ── INIT STAT ──────────────────────────────────────────────────────────────
 (function(){
@@ -169,12 +153,17 @@ let segmentLayers = []; // per-segment polylines for hover highlight
 // ── LEAFLET INIT ───────────────────────────────────────────────────────────
 function initMap() {
   document.getElementById('map').innerHTML = '';
-  map = L.map('map', {zoomControl:true}).setView([-6.2088, 106.8456], 11);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    attribution:'© OpenStreetMap © CARTO', subdomains:'abcd', maxZoom:19
-  }).addTo(map);
-  mL = L.layerGroup().addTo(map);
-  rL = L.layerGroup().addTo(map);
+  map = new maplibregl.Map({
+    container: 'map',
+    style: 'https://tiles.openfreemap.org/styles/dark',
+    center: [106.8456, -6.2088],
+    zoom: 11,
+    attributionControl: false
+  });
+  map.addControl(new maplibregl.NavigationControl(), 'top-right');
+  map.addControl(new maplibregl.AttributionControl({compact:true}), 'bottom-right');
+  // Wait for style to load before we can add sources/layers
+  map.on('load', function() { mapReady = true; });
 }
 
 // ── SHAPES LAZY ────────────────────────────────────────────────────────────
@@ -446,95 +435,145 @@ function buildCard(result) {
 
 // ── MAP ───────────────────────────────────────────────────────────────────
 function highlightSegment(idx) {
+  if (!map || !mapReady) return;
   segmentLayers.forEach(function(item, i) {
-    if (!item.layer) return;
+    var lineId  = 'route-line-' + i;
+    var baseW   = item.isJak ? 3 : 4;
     if (idx === -1) {
-      // Reset all to normal
-      item.layer.setStyle({opacity: 0.85, weight: item.isJak ? 3 : 4});
+      map.setPaintProperty(lineId, 'line-opacity', 0.85);
+      map.setPaintProperty(lineId, 'line-width', baseW);
     } else if (i === idx) {
-      // Highlight this segment
-      item.layer.setStyle({opacity: 1, weight: item.isJak ? 5 : 6});
-      item.layer.bringToFront();
+      map.setPaintProperty(lineId, 'line-opacity', 1);
+      map.setPaintProperty(lineId, 'line-width', baseW + 2);
     } else {
-      // Dim others
-      item.layer.setStyle({opacity: 0.25, weight: item.isJak ? 2 : 3});
+      map.setPaintProperty(lineId, 'line-opacity', 0.2);
+      map.setPaintProperty(lineId, 'line-width', baseW - 1);
     }
   });
 }
 
 function showOnMap(result) {
   if (!map) return;
-  mL.clearLayers(); rL.clearLayers();
-  segmentLayers = [];
-  if (!result || !result.path.length) return;
   ensureShapes();
 
-  var segs = buildSegs(result.path);
+  // Remove previous layers/sources
+  segmentLayers.forEach(function(item, i) {
+    var lineId = 'route-line-' + i;
+    var dotId  = 'route-dots-' + i;
+    var srcId  = 'route-src-'  + i;
+    var dotSrc = 'dots-src-'   + i;
+    if (map.getLayer(lineId))  map.removeLayer(lineId);
+    if (map.getLayer(dotId))   map.removeLayer(dotId);
+    if (map.getSource(srcId))  map.removeSource(srcId);
+    if (map.getSource(dotSrc)) map.removeSource(dotSrc);
+  });
+  // Remove marker layers
+  ['ml-origin','ml-dest','ml-transfer'].forEach(function(id) {
+    if (map.getLayer(id))  map.removeLayer(id);
+    if (map.getSource(id)) map.removeSource(id);
+  });
+  segmentLayers = [];
+
+  if (!result || !result.path.length) return;
+
+  var segs     = buildSegs(result.path);
   var allCoords = [];
 
-  segs.forEach(function(seg, si) {
-    var color  = getColor(seg.r);
-    var isJak  = (G.routes[seg.r] && G.routes[seg.r].desc) === 'Mikrotrans';
-    var shapeId = G.routeShape[seg.r];
-    var layer = null;
+  // Wait for map style to be ready
+  function doRender() {
+    segs.forEach(function(seg, si) {
+      var color  = getColor(seg.r);
+      var isJak  = (G.routes[seg.r] && G.routes[seg.r].desc) === 'Mikrotrans';
+      var weight = isJak ? 3 : 4;
+      var dash   = isJak ? [4, 3] : null;
+      var lineId = 'route-line-' + si;
+      var dotId  = 'route-dots-' + si;
+      var srcId  = 'route-src-'  + si;
+      var dotSrc = 'dots-src-'   + si;
 
-    if (shapeId && G.shapes && G.shapes[shapeId]) {
-      var coords = G.shapes[shapeId];
-      allCoords.push.apply(allCoords, coords);
-      layer = L.polyline(coords, {
-        color: color, weight: isJak ? 3 : 4, opacity: 0.85,
-        dashArray: isJak ? '8,4' : null
-      }).addTo(rL);
-    } else {
-      var sc = (G.routeStops[seg.r]||[])
-        .filter(function(s){ return G.stops[s]; })
-        .map(function(s){ return [G.stops[s].la, G.stops[s].lo]; });
-      if (sc.length > 1) {
-        allCoords.push.apply(allCoords, sc);
-        layer = L.polyline(sc, {color:color, weight:3, opacity:0.7, dashArray:'4,4'}).addTo(rL);
+      // Line coords — prefer shape, fallback to stop sequence
+      var shapeId = G.routeShape[seg.r];
+      var lineCoords = [];
+      if (shapeId && G.shapes && G.shapes[shapeId]) {
+        lineCoords = G.shapes[shapeId].map(function(p){ return [p[1], p[0]]; });
+        allCoords  = allCoords.concat(G.shapes[shapeId].map(function(p){ return [p[0], p[1]]; }));
+      } else {
+        seg.stops.forEach(function(sid) {
+          var s = G.stops[sid];
+          if (s) { lineCoords.push([s.lo, s.la]); allCoords.push([s.la, s.lo]); }
+        });
       }
-    }
-    segmentLayers.push({layer:layer, isJak:isJak});
 
-    // Draw stop dots for this segment
-    seg.stops.forEach(function(sid) {
-      var s = G.stops[sid];
-      if (!s) return;
-      L.circleMarker([s.la, s.lo], {
-        radius: 3,
-        fillColor: color,
-        color: '#0d0f14',
-        weight: 1,
-        fillOpacity: 0.8,
-        pane: 'markerPane'
-      }).bindTooltip(esc(s.n), {direction:'top', offset:[0,-4]}).addTo(rL);
+      if (lineCoords.length > 1) {
+        map.addSource(srcId, {type:'geojson', data:{type:'Feature', geometry:{type:'LineString', coordinates:lineCoords}}});
+        var paint = {'line-color':color, 'line-width':weight, 'line-opacity':0.85};
+        if (dash) paint['line-dasharray'] = dash;
+        map.addLayer({id:lineId, type:'line', source:srcId, layout:{'line-cap':'round','line-join':'round'}, paint:paint});
+      }
+
+      // Stop dots
+      var dotFeatures = seg.stops
+        .filter(function(sid){ return G.stops[sid]; })
+        .map(function(sid) {
+          var s = G.stops[sid];
+          return {type:'Feature', properties:{name:s.n}, geometry:{type:'Point', coordinates:[s.lo, s.la]}};
+        });
+      if (dotFeatures.length) {
+        map.addSource(dotSrc, {type:'geojson', data:{type:'FeatureCollection', features:dotFeatures}});
+        map.addLayer({id:dotId, type:'circle', source:dotSrc, paint:{
+          'circle-radius':3, 'circle-color':color,
+          'circle-stroke-color':'#0d0f14', 'circle-stroke-width':1, 'circle-opacity':0.85
+        }});
+        // Tooltip on hover
+        map.on('mouseenter', dotId, function(e) {
+          map.getCanvas().style.cursor = 'pointer';
+          var name = e.features[0].properties.name;
+          new maplibregl.Popup({closeButton:false, closeOnClick:false, className:'ml-tip'})
+            .setLngLat(e.features[0].geometry.coordinates)
+            .setHTML('<span style="font-size:11px;font-family:DM Sans,sans-serif">' + esc(name) + '</span>')
+            .addTo(map);
+        });
+        map.on('mouseleave', dotId, function() {
+          map.getCanvas().style.cursor = '';
+          var popups = document.querySelectorAll('.maplibregl-popup');
+          popups.forEach(function(p){ p.remove(); });
+        });
+      }
+
+      segmentLayers.push({isJak:isJak, color:color});
     });
-  });
 
-  // Origin
-  var fs = G.stops[selF];
-  if (fs) {
-    L.circleMarker([fs.la,fs.lo], {radius:9, fillColor:'#e8f03c', color:'#0d0f14', weight:2, fillOpacity:1})
-      .bindPopup('<b>🟢 Asal</b><br>' + esc(fs.n)).addTo(mL);
-    allCoords.push([fs.la, fs.lo]);
-  }
-  // Transfer markers
-  result.path.forEach(function(step) {
-    if (step.isX) {
-      var s = G.stops[step.stop];
-      if (s) L.circleMarker([s.la,s.lo], {radius:7, fillColor:'#3ce8b4', color:'#0d0f14', weight:2, fillOpacity:1})
-        .bindPopup('<b>🔄 Transfer</b><br>' + esc(s.n)).addTo(mL);
+    // Origin marker
+    var fs = G.stops[selF];
+    var ts = G.stops[selT];
+    var markerFeatures = [];
+    if (fs) { markerFeatures.push({type:'Feature',properties:{t:'ori',n:fs.n},geometry:{type:'Point',coordinates:[fs.lo,fs.la]}}); allCoords.push([fs.la,fs.lo]); }
+    if (ts) { markerFeatures.push({type:'Feature',properties:{t:'dst',n:ts.n},geometry:{type:'Point',coordinates:[ts.lo,ts.la]}}); allCoords.push([ts.la,ts.lo]); }
+    result.path.forEach(function(step) {
+      if (step.isX) { var s=G.stops[step.stop]; if(s) markerFeatures.push({type:'Feature',properties:{t:'trf',n:s.n},geometry:{type:'Point',coordinates:[s.lo,s.la]}}); }
+    });
+
+    map.addSource('ml-origin', {type:'geojson', data:{type:'FeatureCollection', features:markerFeatures}});
+    map.addLayer({id:'ml-origin', type:'circle', source:'ml-origin', paint:{
+      'circle-radius':['match',['get','t'],'trf',7,9],
+      'circle-color':['match',['get','t'],'ori','#e8f03c','dst','#ff4757','#3ce8b4'],
+      'circle-stroke-color':'#0d0f14','circle-stroke-width':2
+    }});
+
+    // Fit bounds
+    if (allCoords.length) {
+      var lons = allCoords.map(function(c){return c[1];});
+      var lats = allCoords.map(function(c){return c[0];});
+      map.fitBounds(
+        [[Math.min.apply(null,lons), Math.min.apply(null,lats)],
+         [Math.max.apply(null,lons), Math.max.apply(null,lats)]],
+        {padding:60, maxZoom:15}
+      );
     }
-  });
-  // Destination
-  var ts = G.stops[selT];
-  if (ts) {
-    L.circleMarker([ts.la,ts.lo], {radius:9, fillColor:'#ff4757', color:'#0d0f14', weight:2, fillOpacity:1})
-      .bindPopup('<b>🔴 Tujuan</b><br>' + esc(ts.n)).addTo(mL);
-    allCoords.push([ts.la, ts.lo]);
   }
 
-  if (allCoords.length) map.fitBounds(L.latLngBounds(allCoords).pad(.12));
+  if (mapReady) { doRender(); }
+  else { map.once('load', function(){ mapReady=true; doRender(); }); }
 }
 
 </script>
